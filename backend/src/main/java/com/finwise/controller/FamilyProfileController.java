@@ -1,14 +1,12 @@
 // Controller
 package com.finwise.controller;
 
-import com.finwise.config.CustomOAuth2SuccessHandler;
 import com.finwise.dto.FamilyProfileDTO;
 import com.finwise.entity.User;
 import com.finwise.service.FamilyProfileService;
 import com.finwise.util.Util;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/familyProfile")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class FamilyProfileController {
 
     private final FamilyProfileService familyProfileService;
@@ -29,10 +28,6 @@ public class FamilyProfileController {
 
 
 
-//    @GetMapping
-//    public ResponseEntity<List<FamilyProfileDTO>> getAllProfiles() {
-//        return ResponseEntity.ok(familyProfileService.getAllFamilyProfiles());
-//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<FamilyProfileDTO> getProfileById(@PathVariable Long id) {
@@ -44,8 +39,8 @@ public class FamilyProfileController {
 
     @PostMapping
     public ResponseEntity<FamilyProfileDTO> createProfile(@Valid @RequestBody FamilyProfileDTO dto) {
-        Long userId = util.getCurrentUserId();
-        dto.setUserId(userId);
+        Optional<User> user = util.getCurrentAuthenticatedUser();
+        dto.setUserId(user.get().getId());
         return ResponseEntity.status(201).body(familyProfileService.createFamilyProfile(dto));
     }
 
@@ -76,8 +71,8 @@ public class FamilyProfileController {
 
     @GetMapping
     public ResponseEntity<FamilyProfileDTO> getProfileByUserId(){
-        Long userId = util.getCurrentUserId();
-        return ResponseEntity.ok(familyProfileService.getProfileByUserId(userId));
+        Optional<User> user = util.getCurrentAuthenticatedUser();
+        return ResponseEntity.ok(familyProfileService.getProfileByUserId(user.get().getId()));
     }
 
 }

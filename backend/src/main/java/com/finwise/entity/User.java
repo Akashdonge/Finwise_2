@@ -58,7 +58,7 @@ public class User {
     private String image_url;
 
     @Column(name = "is_new_user")
-    private boolean isNewUser;
+    private boolean newUser;
 
     @PreUpdate
     public void setLastUpdate() {
@@ -69,8 +69,4 @@ public class User {
     private FamilyProfile profile;
     @OneToMany(mappedBy = "usernoti")
     private List<Notification> notifications;
-
-    public boolean newUser() {
-        return isNewUser;
-    }
 }

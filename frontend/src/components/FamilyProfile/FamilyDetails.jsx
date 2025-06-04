@@ -7,23 +7,24 @@ import {
     MapPin,
     Shield,
     AlertCircle,
-    CheckCircle,
-    Bell,
-    Settings
+    CheckCircle
 } from 'lucide-react';
 import axios from 'axios';
 
 const FamilyDetails = () => {
     const navigate = useNavigate();
+
+    // State variables (removed children state)
     const [familySize, setFamilySize] = useState('');
     const [monthlyIncome, setMonthlyIncome] = useState('');
     const [monthlyExpenses, setMonthlyExpenses] = useState('');
     const [location, setLocation] = useState('');
     const [riskTolerance, setRiskTolerance] = useState('moderate');
-    const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState(null);
+    const [errors, setErrors] = useState({});
 
+    // Risk tolerance mapping for backend
     const getRiskToleranceForDb = (riskTolerance) => {
         switch (riskTolerance) {
             case 'conservative': return 'LOW';
@@ -33,6 +34,7 @@ const FamilyDetails = () => {
         }
     };
 
+    // Form validation (removed children validation)
     const validateForm = () => {
         const newErrors = {};
 
@@ -52,10 +54,6 @@ const FamilyDetails = () => {
             newErrors.monthlyExpenses = 'Monthly expenses cannot be negative';
         }
 
-        if (parseFloat(monthlyExpenses) > parseFloat(monthlyIncome)) {
-            newErrors.monthlyExpenses = 'Expenses cannot exceed income';
-        }
-
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -71,6 +69,7 @@ const FamilyDetails = () => {
 
         setIsSubmitting(true);
 
+        // Create familyData object matching backend DTO (removed children)
         const familyData = {
             familySize: parseInt(familySize),
             monthlyIncome: parseFloat(monthlyIncome),
@@ -80,6 +79,7 @@ const FamilyDetails = () => {
         };
 
         try {
+            // Save family profile
             const response = await axios.post('http://localhost:8080/api/familyProfile', familyData, {
                 withCredentials: true,
                 headers: {
@@ -88,8 +88,12 @@ const FamilyDetails = () => {
             });
 
             console.log('Family profile created successfully:', response.data);
+
+            // Update user status to mark as not new user
+
             setSubmitStatus('success');
 
+            // Redirect to dashboard after success
             setTimeout(() => {
                 navigate('/dashboard');
             }, 2000);
@@ -102,10 +106,10 @@ const FamilyDetails = () => {
                 const status = error.response.status;
                 const errorData = error.response.data;
 
-                if (status === 401) {
+                if (status === 401 || status === 403) {
                     setErrors({ submit: 'Session expired. Please log in again.' });
                     setTimeout(() => {
-                        navigate('/');
+                        navigate('/login');
                     }, 2000);
                 } else if (status === 400) {
                     setErrors({ submit: errorData.message || 'Invalid data provided. Please check your inputs.' });
@@ -115,7 +119,7 @@ const FamilyDetails = () => {
                     setErrors({ submit: `Error: ${errorData.message || 'Failed to save family details'}` });
                 }
             } else if (error.request) {
-                setErrors({ submit: 'Network error. Please check your connection and ensure the backend server is running.' });
+                setErrors({ submit: 'Network error. Please check your connection.' });
             } else {
                 setErrors({ submit: 'An unexpected error occurred. Please try again.' });
             }
@@ -124,46 +128,10 @@ const FamilyDetails = () => {
         }
     };
 
-    const clearFieldError = (fieldName) => {
-        if (errors[fieldName]) {
-            setErrors(prev => {
-                const newErrors = { ...prev };
-                delete newErrors[fieldName];
-                return newErrors;
-            });
-        }
-    };
-
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-900 to-indigo-950 text-white">
-            {/* Navigation Bar */}
-            <nav className="px-6 py-4 flex justify-between items-center md:px-16 lg:px-24 border-b border-white/10">
-                <div className="flex items-center space-x-3">
-                    <DollarSign size={24} className="text-emerald-400" />
-                    <h1 className="text-2xl font-bold tracking-tight">
-                        <span className="text-emerald-400">Fin</span>Wise
-                    </h1>
-                </div>
-                <div className="flex items-center space-x-4">
-                    <div className="relative">
-                        <button className="p-2 rounded-full hover:bg-white/5 relative">
-                            <Bell size={20} className="text-gray-300" />
-                        </button>
-                    </div>
-                    <button className="p-2 rounded-full hover:bg-white/5">
-                        <Settings size={20} className="text-gray-300" />
-                    </button>
-                    <div className="flex items-center space-x-2">
-                        <div className="h-8 w-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
-                            <User size={18} />
-                        </div>
-                        <span className="font-medium text-gray-300">Setup Profile</span>
-                    </div>
-                </div>
-            </nav>
-
-            <div className="max-w-4xl mx-auto px-6 md:px-16 lg:px-24 py-12">
-                <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8">
+        <div className="min-h-screen bg-gradient-to-br from-blue-900 to-indigo-950 text-white py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto">
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-8">
                     <div className="text-center mb-8">
                         <h1 className="text-3xl font-bold text-white mb-2">Family Financial Profile</h1>
                         <p className="text-gray-300">Help us understand your family's financial situation to provide personalized recommendations</p>
@@ -186,12 +154,11 @@ const FamilyDetails = () => {
 
                     <form onSubmit={handleSubmit} className="space-y-8">
                         {/* Basic Family Information */}
-                        <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+                        <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10">
                             <h2 className="text-xl font-semibold text-white mb-4 flex items-center">
                                 <Users className="mr-2 text-emerald-400" size={24} />
                                 Basic Information
                             </h2>
-
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -201,10 +168,7 @@ const FamilyDetails = () => {
                                         type="number"
                                         min="1"
                                         value={familySize}
-                                        onChange={(e) => {
-                                            setFamilySize(e.target.value);
-                                            clearFieldError('familySize');
-                                        }}
+                                        onChange={(e) => setFamilySize(e.target.value)}
                                         className={`w-full px-3 py-2 bg-white/10 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 text-white placeholder-gray-400 ${
                                             errors.familySize ? 'border-red-500' : 'border-white/20'
                                         }`}
@@ -215,7 +179,6 @@ const FamilyDetails = () => {
                                         <p className="mt-1 text-sm text-red-400">{errors.familySize}</p>
                                     )}
                                 </div>
-
                                 <div>
                                     <label className="block text-sm font-medium text-gray-300 mb-2">
                                         <MapPin className="inline mr-1" size={16} />
@@ -224,10 +187,7 @@ const FamilyDetails = () => {
                                     <input
                                         type="text"
                                         value={location}
-                                        onChange={(e) => {
-                                            setLocation(e.target.value);
-                                            clearFieldError('location');
-                                        }}
+                                        onChange={(e) => setLocation(e.target.value)}
                                         className={`w-full px-3 py-2 bg-white/10 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 text-white placeholder-gray-400 ${
                                             errors.location ? 'border-red-500' : 'border-white/20'
                                         }`}
@@ -242,12 +202,11 @@ const FamilyDetails = () => {
                         </div>
 
                         {/* Financial Information */}
-                        <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+                        <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10">
                             <h2 className="text-xl font-semibold text-white mb-4 flex items-center">
                                 <DollarSign className="mr-2 text-emerald-400" size={24} />
                                 Financial Information
                             </h2>
-
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -258,10 +217,7 @@ const FamilyDetails = () => {
                                         min="0"
                                         step="0.01"
                                         value={monthlyIncome}
-                                        onChange={(e) => {
-                                            setMonthlyIncome(e.target.value);
-                                            clearFieldError('monthlyIncome');
-                                        }}
+                                        onChange={(e) => setMonthlyIncome(e.target.value)}
                                         className={`w-full px-3 py-2 bg-white/10 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 text-white placeholder-gray-400 ${
                                             errors.monthlyIncome ? 'border-red-500' : 'border-white/20'
                                         }`}
@@ -272,7 +228,6 @@ const FamilyDetails = () => {
                                         <p className="mt-1 text-sm text-red-400">{errors.monthlyIncome}</p>
                                     )}
                                 </div>
-
                                 <div>
                                     <label className="block text-sm font-medium text-gray-300 mb-2">
                                         Monthly Expenses (₹) *
@@ -282,10 +237,7 @@ const FamilyDetails = () => {
                                         min="0"
                                         step="0.01"
                                         value={monthlyExpenses}
-                                        onChange={(e) => {
-                                            setMonthlyExpenses(e.target.value);
-                                            clearFieldError('monthlyExpenses');
-                                        }}
+                                        onChange={(e) => setMonthlyExpenses(e.target.value)}
                                         className={`w-full px-3 py-2 bg-white/10 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 text-white placeholder-gray-400 ${
                                             errors.monthlyExpenses ? 'border-red-500' : 'border-white/20'
                                         }`}
@@ -312,12 +264,11 @@ const FamilyDetails = () => {
                         </div>
 
                         {/* Risk Tolerance */}
-                        <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+                        <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10">
                             <h2 className="text-xl font-semibold text-white mb-4 flex items-center">
                                 <Shield className="mr-2 text-emerald-400" size={24} />
                                 Investment Risk Tolerance
                             </h2>
-
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 {[
                                     { value: 'conservative', label: 'Conservative', desc: 'Low risk, stable returns' },
