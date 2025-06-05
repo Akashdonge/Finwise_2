@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: FinWise
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/FinWise
+    username: root
+    password: Akashd@123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+
+server:
+  port: 8080
+  servlet:
+    session:
+      persistent: false
+
+logging:
+  level:
+    org.springframework.web: INFO
+    com.ffp: DEBUG
