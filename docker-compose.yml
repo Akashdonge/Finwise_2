@@ -9,7 +9,7 @@ services:
       MYSQL_ROOT_PASSWORD: Akashd@123
       MYSQL_DATABASE: FinWise
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql-data:/var/lib/mysql
 
