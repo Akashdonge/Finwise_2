@@ -3,7 +3,7 @@ spring:
     name: FinWise
 
   datasource:
-    url: jdbc:mysql://db:3306/FinWise
+    jdbc:mysql://db:3306/FinWise?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
     username: root
     password: Akashd@123
     driver-class-name: com.mysql.cj.jdbc.Driver
