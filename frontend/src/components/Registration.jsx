@@ -72,7 +72,7 @@ const Register = () => {
                 lastName: formData.lastName
             };
 
-            const response = await axios.post('http://localhost:8080/api/auth/register', registrationData);
+            const response = await axios.post('https://finwise-backend-latest.onrender.com/api/auth/register', registrationData);
 
             if (response.data.success) {
                 // Registration successful, redirect to family details (new user)
