@@ -3,7 +3,7 @@ import { TrendingUp, Calendar, DollarSign, Edit3, Trash2, Target, Plus, X, Save 
 import DynamicNavbar from "../DynamicNavbar";
 
 // API endpoint
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = 'https://finwise-backend-latest.onrender.com';
 
 // API service
 const investmentAPI = {
