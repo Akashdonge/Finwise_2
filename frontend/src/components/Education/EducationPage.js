@@ -4,7 +4,7 @@ import DynamicNavbar from "../DynamicNavbar";
 import { userService } from '../util/userService';
 
 // API Base URL Configuration
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = 'https://finwise-backend-latest.onrender.com';
 
 // Complete API service with localhost:8080 endpoints
 const familyEducationAPI = {
