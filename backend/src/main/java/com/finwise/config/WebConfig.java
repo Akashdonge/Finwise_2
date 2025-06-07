@@ -11,7 +11,7 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                    .allowedOrigins("https://finwise-frontend-latest.onrender.com") // 🔁 replace with your actual frontend URL
+                    .allowedOrigins("https://finwise-msj9.onrender.com") // 🔁 replace with your actual frontend URL
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowCredentials(true)
                     .allowedHeaders("*");
