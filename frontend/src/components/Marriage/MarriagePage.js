@@ -3,7 +3,7 @@ import { User, Calendar, DollarSign, Heart, Edit3, Trash2, Target, Plus, X, Save
 import DynamicNavbar from "../DynamicNavbar";
 
 // API Configuration
-const API_BASE_URL = 'https://finwise-backend-latest.onrender.com';
+const API_BASE_URL = 'https://finwise-backend-latest2.onrender.com';
 
 // API service functions
 const marriagePlanAPI = {
