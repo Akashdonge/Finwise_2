@@ -31,7 +31,7 @@ const Dashboard = () => {
     const fetchDashboardData = async () => {
         try {
             // Fetch family profile data
-            const familyResponse = await axios.get('https://finwise-backend-latest.onrender.com/api/familyProfile', {
+            const familyResponse = await axios.get('https://finwise-backend-latest2.onrender.com/api/familyProfile', {
                 withCredentials: true
             });
 
