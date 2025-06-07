@@ -46,24 +46,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        // Allow public URLs first (order matters!)
-                        .requestMatchers(PUBLIC_URLS).permitAll()
-                        // Allow OPTIONS requests for CORS preflight
-                        .requestMatchers("OPTIONS", "/**").permitAll()
-                        // Require authentication for other API endpoints
-                        .requestMatchers("/api/children/**").authenticated()
-                        .requestMatchers("/api/**").authenticated()
-                        // Allow all other requests
-                        .anyRequest().permitAll()
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                        .maximumSessions(1)
-                        .maxSessionsPreventsLogin(false)
-                );
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(PUBLIC_URLS).permitAll()
+                .requestMatchers("OPTIONS", "/**").permitAll()
+                .requestMatchers("/api/children/**").authenticated()
+                .requestMatchers("/api/**").authenticated()
+                .anyRequest().permitAll()
+            )
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(false)
+            );
         return http.build();
     }
 
@@ -71,28 +67,19 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Allow multiple origins if needed
-configuration.setAllowedOriginPatterns(List.of(
-    "http://localhost:*",
-    "http://127.0.0.1:*",
-    "https://finwise-msj9.onrender.com"
-));
+        // 🌍 Allow frontend origins here
+        configuration.setAllowedOriginPatterns(List.of(
+                "http://localhost:*",
+                "http://127.0.0.1:*",
+                "https://finwise-msj9.onrender.com"
+        ));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
-        configuration.setExposedHeaders(Arrays.asList(
-                "Access-Control-Allow-Origin",
-                "Access-Control-Allow-Credentials",
-                "Authorization",
-                "Content-Type",
-                "X-Requested-With",
-                "Accept",
-                "Origin",
-                "Access-Control-Request-Method",
-                "Access-Control-Request-Headers"
-        ));
-        configuration.setMaxAge(3600L);
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true); // Required for withCredentials: true
+        configuration.setExposedHeaders(List.of("Set-Cookie", "Content-Type"));
+
+        configuration.setMaxAge(3600L); // Cache preflight response for 1 hour
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
