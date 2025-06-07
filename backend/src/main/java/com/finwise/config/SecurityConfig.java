@@ -72,11 +72,12 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // Allow multiple origins if needed
-        configuration.setAllowedOriginPatterns(List.of(
+configuration.setAllowedOriginPatterns(List.of(
     "http://localhost:*",
     "http://127.0.0.1:*",
-    "https://finwise-frontend-latest.onrender.com"
+    "https://finwise-msj9.onrender.com"
 ));
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
